@@ -1,0 +1,70 @@
+{% extends 'base.html' %} 
+{% block 'content' %} 
+{% include 'header.html' with data=cat%}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex ms-4 mt-4" style="font-size: 13px;
+            color: grey;
+            font-weight: 500">
+                <span class="ms-2">Home</span>
+                <span class="ms-2"> > </span>
+                <span class="ms-2"> {{ prd.category.title }} </span>
+                <span class="ms-2" > > </span>
+                <span class="ms-2"> {{ prd.name }} </span>
+            </div>
+        </div>
+
+        <div class="col-12 mt-5 mb-5">
+            <div class="row">
+                <div class="col-4 ms-4">
+                    <img src="{{ prd.image.url }}" width="400px" height="400px" class="card-img-top" alt="">
+                </div>
+                <div class="col-5">
+                    <h2>{{ prd.name }}</h2>
+                   <div class="d-flex mt-3">
+                    <span style="font-size: 15.5px;">Brand: </span>
+                    <span style="font-size: 15.5px;color: #39b4ac;text-transform: capitalize;">{{ prd.brand }}</span>
+                   </div>
+                   <hr>
+                  <div class="d-flex" style="align-items: baseline;">
+                    <h2 style="color: #39b4ac;">₹{{ prd.price }}</h2>
+                    <h6 class="ms-3" style="color: grey;text-decoration: line-through;">₹{{ prd.price }}</h6>
+                  </div>
+                  <hr>
+                  <span>
+                    {{ prd.description }}
+                  </span>
+                  <div class="d-flex mt-4">
+                    <button  style="font-size: 15px;
+                  font-weight: 500;
+                  color: #ffffff;
+                  padding: 8px 40px;
+                  border: none;
+                  background-color: #088178;
+                  border: 1px solid #046963;
+                  border-radius: 5px">Add to cart</button>
+
+                  </div>
+                </div>
+                <div class="col-2 ms-3" style="width: 21% !important;">
+                    <div class="card" style="border-radius: 0px !important;">
+                        <div class="card-body p-4">
+                            <h5 style="font-weight: 400;">Categories</h5>
+                            <hr>
+                            <div class="d-flex " style="flex-direction: column;">
+                               {% for data in cat %}
+                               <a href="{% url 'filter' data.slug %}" class="mt-2 text-dark" style="font-size:14px;text-decoration: none;">{{ data.title }}</a>
+                               {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock %}

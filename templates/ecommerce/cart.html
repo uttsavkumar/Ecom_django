@@ -1,0 +1,235 @@
+{% extends 'base.html' %} {% block 'content' %} 
+{% include 'header.html' with data=cat%}
+
+<div class="container mt-1">
+  <div class="row p-4">
+    <div class="col-12">
+      <h1>My Cart</h1>
+    </div>
+    {% if order|length >= 1%}
+
+    <div class="col-8 mt-3">
+      <div class="row">
+        <div
+          class="card"
+          style="border-radius: 0px; border: 0.5px solid rgb(233, 233, 233)"
+        >
+          <div class="card-body">
+            {% for ord in order %}
+            <div class="col-12 mt-3">
+              <div class="d-flex">
+                <img
+                  src="{{ ord.item.image.url }}"
+                  class="card-img-top"
+                  height="100px"
+                  style="width: 100px"
+                  alt=""
+                />
+                <div>
+                  <h5 class="ms-4">{{ ord.item.name }}</h5>
+                  {% if ord.item.discount_price %}
+                  <div class="d-flex align-items-center">
+                    <h5 class="ms-4">₹{{ ord.getdiscountprice }}</h5>
+                    <del class="ms-2" style="flex-grow: 1; margin-top: -8px"
+                      >₹{{ ord.getprice }}</del
+                    >
+                    <h6 class="ms-2 text-success" style="font-weight: 400">
+                      {{ ord.getdiscountpercentage }}%
+                    </h6>
+                  </div>
+                  {% else %}
+                  <h5 class="ms-4">₹{{ ord.item.price }}</h5>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="d-flex mt-3 align-items-center">
+                <a href="{% url 'addtocart' ord.item.slug %}">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25"
+                    height="25"
+                    fill="grey"
+                    class="bi bi-plus-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                    />
+                    <path
+                      d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+                    />
+                  </svg>
+                </a>
+                <div class="card p-0 ms-2 me-2" style="border-radius: 0px">
+                  <div class="card-body p-1">{{ ord.qty }}</div>
+                </div>
+                <a href="{% url 'reducequantity' ord.item.slug %}">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25"
+                    height="25"
+                    fill="grey"
+                    class="bi bi-dash-circle"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                    />
+                    <path
+                      d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"
+                    />
+                  </svg>
+                </a>
+                <a
+                  href="{% url 'removeproduct' ord.item.slug %}"
+                  class="text-dark"
+                  style="margin-left: 30px; text-decoration: none"
+                >
+                  <h6>Remove</h6>
+                </a>
+              </div>
+            </div>
+            {% if order|length != 1 %}
+            <hr />
+            {% endif %} {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-4 mt-2 mb-5">
+      <div
+        class="card mt-2"
+        style="border-radius: 0px; border: 0.5px solid rgb(233, 233, 233)"
+      >
+        <div class="card-body">
+          <div class="d-flex">
+            <h6 style="flex-grow: 1">Total Amount</h6>
+            <h6
+              style="
+                color: #39b4ac;
+                text-decoration: underline;
+                font-size: 14px;
+              "
+            >
+              Rs {{ mainorder.totalamount }}
+            </h6>
+          </div>
+          {% if mainorder.deliveryfee == 0 %}
+          <div class="d-flex">
+            <h6 style="flex-grow: 1">Delivery Fee</h6>
+            <h6
+              style="
+                color: #39b4ac;
+                text-decoration: underline;
+                font-size: 14px;
+              "
+            >
+              Free
+            </h6>
+          </div>
+          {% else %}
+          <div class="d-flex">
+            <h6 style="flex-grow: 1">Delivery Fee</h6>
+            <h6
+              style="
+                color: #39b4ac;
+                text-decoration: underline;
+                font-size: 14px;
+              "
+            >
+              Rs {{ mainorder.deliveryfee }}
+            </h6>
+          </div>
+          {% endif %} {% if mainorder.coupondiscount == 0 %}
+          <div class="d-flex">
+            <h6 style="flex-grow: 1">Coupon Discount</h6>
+            <h6
+              style="
+                color: #39b4ac;
+                text-decoration: underline;
+                font-size: 14px;
+              "
+            >
+              No coupon applied!
+            </h6>
+          </div>
+          {% else %}
+          <div class="d-flex align">
+            <h6 style="flex-grow: 1">Coupon Discount</h6>
+            <h6 style="color: #39b4ac; text-decoration: underline;font-size: 14px;">
+              Rs {{ mainorder.coupondiscount }}
+            </h6>
+            <a href="{% url 'removecoupon' %}" style="    margin: -6px;
+                margin-left: 6px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+                  </svg>
+            </a> 
+          </div>
+          {% endif %}
+
+          <div class="d-flex">
+            <h6 style="flex-grow: 1">Payable Amount</h6>
+            <h5 style="color: #39b4ac; text-decoration: underline">
+              Rs {{ mainorder.totalpayableamount }}
+            </h5>
+          </div>
+          <div class="mt-4 mb-2 d-flex">
+            <div style="flex-grow: 1"></div>
+            <a href="{% url 'checkout' %}"
+              style="
+                font-size: 15px;
+                font-weight: 500;
+                color: #ffffff;
+                padding: 8px 40px;
+                border: none;
+                background-color: #088178;
+                border: 1px solid #046963;
+                border-radius: 5px;
+              "
+            >
+              Checkout
+            </a>
+          </div>
+          <span class="text-lead" style="font-size: 13.5px; color: grey"
+            >Purchase a total of over 5000 to avoid delivery charges**</span
+          >
+        </div>
+      </div>
+      <div class="mt-3">
+        <form action="{% url 'coupon' %}" class="d-flex" method="post">
+          {% csrf_token %}
+          <input
+            type="text"
+            name="coupon"
+            placeholder="Have a coupon?"
+            class="form-control shadow-none"
+            style="border-radius: 0px; border-color: rgb(224, 224, 224)"
+          />
+          <input
+            type="submit"
+            value="Apply"
+            class="btn text-light"
+            style="background-color: #088178; border-radius: 0px"
+          />
+        </form>
+        {% if messages %}
+        {% for message in messages %}
+
+            <span class="mt-3 text-danger">{{ message }}</span>
+            {% endfor %}
+
+         {% endif %}
+      </div>
+    </div>
+    {% else %}
+    <img
+      src="https://mir-s3-cdn-cf.behance.net/projects/404/95974e121862329.Y3JvcCw5MjIsNzIxLDAsMTM5.png"
+      class="card-img-top"
+      alt=""
+    />
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}
